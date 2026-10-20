@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+# Generated media, model weights and caches never belong in Git
+*.wav
+*.ogg
+*.mp3
+*.tflite
+*.safetensors
+examples/**/.godot/
+examples/**/*.import
+examples/**/audio/

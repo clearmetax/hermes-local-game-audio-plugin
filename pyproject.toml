@@ -1,0 +1,20 @@
+# Development metadata only. The plugin has no runtime dependencies, so this
+# file declares none (Hermes reads [project].dependencies from it).
+[project]
+name = "hermes-local-game-audio"
+version = "0.2.1"
+description = "Hermes Agent plugin: local AI sound effects and music for game development"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = []
+
+# Dev tools are run ad hoc (see docs/DEVELOPMENT.md) rather than declared as a
+# dependency group, so the plugin never adds constraints to Hermes's workspace.
+
+[tool.ruff]
+target-version = "py311"
+line-length = 140
+extend-exclude = ["examples"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

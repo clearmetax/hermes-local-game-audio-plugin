@@ -1,0 +1,155 @@
+name: hermes-local-game-audio
+version: 0.2.1
+manifest_version: 2
+api_version: 1
+description: >-
+  Local AI sound effects AND music for game development. Generates SFX, UI
+  sounds, ambience beds, music loops and stingers on your own machine (Agent
+  Audio / Stable Audio 3 Medium, or your ComfyUI with Stable Audio Open or
+  ACE-Step), picks the best of several takes with objective audio analysis and
+  optional CLAP prompt matching, masters them to game loudness standards, builds
+  seamless bar-aligned loops, and wires them into Godot with reversible edits.
+author: AG (PAIR LABS)
+license: MIT
+homepage: https://github.com/clearmetax/hermes-local-game-audio
+requires_hermes: ">=0.21.6"
+tags: [audio, sound-effects, sfx, music, gamedev, godot, unity, unreal, comfyui, local, offline]
+
+provides_tools:
+  - audio_status
+  - generate_sound
+  - generate_music
+  - generate_variations
+  - analyze_audio
+  - process_audio
+  - inspect_game_audio
+  - prepare_game_audio
+  - integrate_game_audio
+provides_hooks:
+  - pre_llm_call
+
+# No Python dependencies: the plugin is pure standard library. Model runtimes
+# (Agent Audio, ComfyUI, the optional CLAP scorer) run in their own processes
+# and environments, so nothing is added to Hermes's shared environment.
+
+config_schema:
+  backend:
+    type: str
+    choices: [auto, agent_audio, comfyui, procedural]
+    default: auto
+    label: Audio backend
+    description: >-
+      auto = your ComfyUI workflow when configured, otherwise Agent Audio.
+      procedural = built-in offline synthesizer for placeholders (not AI). auto never falls back to it.
+  music_backend:
+    type: str
+    choices: [auto, agent_audio, comfyui, procedural]
+    default: auto
+    label: Music backend
+    description: Separate backend for music/stingers/ambience (e.g. ComfyUI ACE-Step for music, Agent Audio for SFX).
+  agent_audio_transport:
+    type: str
+    choices: [sidecar, hermes_mcp]
+    default: sidecar
+    label: Agent Audio connection
+  agent_audio_checkout:
+    type: str
+    default: ""
+    label: Agent Audio checkout folder
+    description: Path to your agent-audio git checkout. Auto-detected when empty.
+  agent_audio_home:
+    type: str
+    default: ""
+    label: Agent Audio data folder (AGENT_AUDIO_HOME)
+  agent_audio_mcp_server:
+    type: str
+    default: agent-audio
+    label: Hermes MCP server name (hermes_mcp connection)
+  comfyui_url:
+    type: str
+    default: http://127.0.0.1:8188
+    label: ComfyUI URL
+  comfyui_workflow_music:
+    type: str
+    default: ""
+    label: ComfyUI music workflow (API JSON)
+    description: Exported with Workflow > Export (API). ACE-Step 1.5 enforces BPM, key and lyrics.
+  comfyui_workflow_sfx:
+    type: str
+    default: ""
+    label: ComfyUI SFX workflow (API JSON)
+    description: e.g. Stable Audio Open (see examples/comfyui).
+  comfyui_allow_remote:
+    type: bool
+    default: false
+    label: Allow a non-local ComfyUI host
+  default_candidates:
+    type: int
+    default: 2
+    label: Takes per sound effect (best one kept)
+  default_music_candidates:
+    type: int
+    default: 1
+    label: Takes per music track (best one kept)
+  max_candidates:
+    type: int
+    default: 4
+    label: Maximum takes per request
+  clap_python:
+    type: str
+    default: ""
+    label: CLAP scorer Python
+    description: Python of a separate environment with torch + transformers (see docs/QUALITY.md). Enables prompt-match ranking.
+  clap_model:
+    type: str
+    default: laion/larger_clap_general
+    label: CLAP model
+  output_format:
+    type: str
+    choices: [wav, ogg]
+    default: wav
+    label: Default file format (ogg needs ffmpeg)
+  ffmpeg_executable:
+    type: str
+    default: ""
+    label: ffmpeg executable (optional)
+  default_duration_seconds:
+    type: float
+    default: 2.0
+    label: Default sound length (seconds)
+  max_duration_seconds:
+    type: float
+    default: 30.0
+    label: Maximum SFX/ambience length (seconds)
+  default_music_seconds:
+    type: float
+    default: 45.0
+    label: Default music length (seconds)
+  max_music_seconds:
+    type: float
+    default: 180.0
+    label: Maximum music length (seconds)
+  generation_timeout_seconds:
+    type: int
+    default: 600
+    label: Generation timeout per take (seconds)
+  max_variations:
+    type: int
+    default: 4
+    label: Maximum variations per request
+  output_dir:
+    type: str
+    default: ""
+    label: Library folder for sounds not tied to a project
+  allowed_project_roots:
+    type: list
+    default: []
+    label: Allowed project roots
+  godot_executable:
+    type: str
+    default: ""
+    label: Godot executable
+  inject_skill_hint:
+    type: bool
+    default: true
+    label: Suggest the game-audio skill on game tasks

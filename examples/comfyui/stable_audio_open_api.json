@@ -1,0 +1,11 @@
+{
+  "3": {"class_type": "KSampler", "inputs": {"seed": 0, "steps": 50, "cfg": 4.98, "sampler_name": "dpmpp_3m_sde_gpu", "scheduler": "exponential", "denoise": 1.0, "model": ["4", 0], "positive": ["10", 0], "negative": ["10", 1], "latent_image": ["11", 0]}},
+  "4": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": "stable-audio-open-1.0.safetensors"}},
+  "6": {"class_type": "CLIPTextEncode", "inputs": {"text": "heavy sword hit", "clip": ["12", 0]}},
+  "7": {"class_type": "CLIPTextEncode", "inputs": {"text": "low quality, noise", "clip": ["12", 0]}},
+  "10": {"class_type": "ConditioningStableAudio", "inputs": {"positive": ["6", 0], "negative": ["7", 0], "seconds_start": 0.0, "seconds_total": 10.0}},
+  "11": {"class_type": "EmptyLatentAudio", "inputs": {"seconds": 10.0, "batch_size": 1}},
+  "12": {"class_type": "CLIPLoader", "inputs": {"clip_name": "t5_base.safetensors", "type": "stable_audio"}},
+  "13": {"class_type": "VAEDecodeAudio", "inputs": {"samples": ["3", 0], "vae": ["4", 2]}},
+  "19": {"class_type": "SaveAudio", "inputs": {"filename_prefix": "audio/ComfyUI", "audio": ["13", 0]}}
+}
